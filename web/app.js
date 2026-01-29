@@ -43,6 +43,7 @@ function emptyCardData() {
     cabinet_number: "",
     name_query: "",
     title: "",
+    title_font_size: 48,
     year: "",
     subtitle: "",
     bullets: ["", "", "", ""],
@@ -131,6 +132,7 @@ function syncFormFromData() {
   el("piece_type").value = currentData.piece_type || "other";
   el("name_query").value = currentData.name_query || "";
   el("title").value = currentData.title || "";
+  el("title_font_size").value = currentData.title_font_size || 48;
   el("year").value = currentData.year || "";
   el("subtitle").value = currentData.subtitle || "";
   el("image_url").value = currentData.image_path || "";
@@ -147,6 +149,7 @@ function syncDataFromForm() {
   currentData.piece_type = el("piece_type").value;
   currentData.name_query = el("name_query").value.trim();
   currentData.title = el("title").value;
+  currentData.title_font_size = parseInt(el("title_font_size").value) || 48;
   currentData.year = el("year").value;
   currentData.subtitle = el("subtitle").value;
   currentData.image_path = el("image_url").value.trim() || null;
@@ -352,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Listeners en tiempo real para actualizar preview
-  ["piece_number", "cabinet_number", "piece_type", "name_query", "title", "year", "subtitle", "image_url"].forEach(id => {
+  ["piece_number", "cabinet_number", "piece_type", "name_query", "title", "title_font_size", "year", "subtitle", "image_url"].forEach(id => {
     el(id).oninput = () => syncDataFromForm();
   });
   

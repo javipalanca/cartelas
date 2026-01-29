@@ -15,6 +15,7 @@ class CardData(BaseModel):
     cabinet_number: str = Field(default="", max_length=20)  # Número de vitrina (interno del museo)
 
     title: str = Field(default="", max_length=80)
+    title_font_size: int = Field(default=48, ge=8, le=120)
     subtitle: str = Field(default="", max_length=110)
     year: str = Field(default="", max_length=20)  # Año de la pieza (prominente)
 

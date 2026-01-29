@@ -219,7 +219,8 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
     img = Image.new("RGB", (W, H), (255, 255, 255))  # Blanco puro
     draw = ImageDraw.Draw(img)
 
-    f_title = _load_font(52, bold=True)  # Título grande y en negrita
+    title_font_size = data.get("title_font_size", 52)
+    f_title = _load_font(title_font_size, bold=True)  # Título grande y en negrita
     f_sub   = _load_font(28, bold=True)   # Subtítulo más grande (AÑO IMPORTANTE)
     f_sub_sm = _load_font(18, bold=False) # Subtítulo pequeño a la derecha
     f_bul   = _load_font(16, bold=False)
@@ -256,9 +257,10 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
     # título puede ser largo: corta en 1-2 líneas
     t_lines = _wrap(draw, title, f_title, max_title_w)
     t_lines = t_lines[:2] if t_lines else [""]
+    line_height = int(title_font_size * 0.92)  # altura de línea proporcional al tamaño
     for i, tl in enumerate(t_lines):
         draw.text((x, y), tl, font=f_title, fill=(20,20,20))
-        y += 48 if i == 0 else 42
+        y += line_height if i == 0 else int(line_height * 0.85)
 
     # AÑO prominente con fabricante pequeño alineado a la derecha
     year = (data.get("year") or " ")#.strip()
