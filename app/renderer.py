@@ -52,7 +52,7 @@ W, H = 480, 670
 MARGIN = 28
 TOP_BOX_SIZE = 50  # Cuadrado
 
-IMAGE_BOX_H = 250
+IMAGE_BOX_H = 200
 
 def _load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     """Carga fuentes de GitHub (openmaptiles/fonts - confiable en Docker)"""
@@ -102,7 +102,7 @@ def _paste_into_box(base: Image.Image, img: Image.Image, box: Tuple[int,int,int,
         # escala para cubrir y recorta
         scale = max(bw / iw, bh / ih)
         nw, nh = int(iw * scale), int(ih * scale)
-        resized = img.resize((nw, nh), Image.Resampling.LANCZOS)
+        resized = img.resize((nw, nh), Image.Resampling.NEAREST)
         cx, cy = nw // 2, nh // 2
         left = cx - bw // 2
         top = cy - bh // 2
@@ -112,7 +112,7 @@ def _paste_into_box(base: Image.Image, img: Image.Image, box: Tuple[int,int,int,
         # contain
         scale = min(bw / iw, bh / ih)
         nw, nh = int(iw * scale), int(ih * scale)
-        resized = img.resize((nw, nh), Image.Resampling.LANCZOS)
+        resized = img.resize((nw, nh), Image.Resampling.NEAREST)
         px = x1 + (bw - nw)//2
         py = y1 + (bh - nh)//2
         base.paste(resized, (px, py))
@@ -161,6 +161,7 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> I
 
     f_title = _load_font(52, bold=True)  # Título grande y en negrita
     f_sub   = _load_font(28, bold=True)   # Subtítulo más grande (AÑO IMPORTANTE)
+    f_sub_sm = _load_font(18, bold=False) # Subtítulo pequeño a la derecha
     f_bul   = _load_font(16, bold=False)
     f_piece = _load_font(50, bold=True)   # Número de pieza muy grande
     f_cap   = _load_font(13, bold=True)
@@ -169,20 +170,21 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> I
     # Nº pieza (arriba derecha) - cuadrado
     pn = (data.get("piece_number") or "").strip()
     if pn:
+        box_w = TOP_BOX_SIZE + (10 if len(pn) == 2 else 0)
         bx2 = W - MARGIN
-        bx1 = bx2 - TOP_BOX_SIZE
+        bx1 = bx2 - box_w
         by1 = MARGIN - 8  # Subir el número
         by2 = by1 + TOP_BOX_SIZE
-        draw.rectangle([bx1, by1, bx2, by2], outline=(20,20,20), width=2, fill=(255,255,255))
+        draw.rectangle([bx1, by1, bx2, by2], outline=(255,100,100), width=2, fill=(255,255,255))
         # Solo el número, sin "Nº"
         txt = pn
         tw = draw.textlength(txt, font=f_piece)
-        tx = bx1 + (TOP_BOX_SIZE - tw)//2
-        ty = by1 + (TOP_BOX_SIZE - 45)//2  # Centrado vertical
+        tx = bx1 + (box_w - tw)//2
+        ty = by1 + (TOP_BOX_SIZE - 55)//2  # Centrado vertical
         draw.text((tx, ty), txt, font=f_piece, fill=(20,20,20))
 
     x = MARGIN
-    y = MARGIN + 8  # Más abajo para tener espacio arriba
+    y = 10 #MARGIN + 8  # Más abajo para tener espacio arriba
 
     # Título (deja sitio si el nº pieza existe)
     title = (data.get("title") or "").strip().upper()
@@ -198,14 +200,20 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> I
         draw.text((x, y), tl, font=f_title, fill=(20,20,20))
         y += 48 if i == 0 else 42
 
-    # AÑO prominente - MUY VISIBLE (sin subtítulo)
+    # AÑO prominente con subtítulo pequeño alineado a la derecha
     year = (data.get("year") or "").strip()
-    if year:
-        draw.text((x, y), year, font=f_sub, fill=(20,20,20))  # Color muy oscuro
+    subtitle = (data.get("subtitle") or "").strip()
+    if year or subtitle:
+        if year:
+            draw.text((x, y), year, font=f_sub, fill=(20,20,20))  # Color muy oscuro
+        if subtitle:
+            sw = draw.textlength(subtitle, font=f_sub_sm)
+            sx = W - MARGIN - sw
+            draw.text((sx, y + 8), subtitle, font=f_sub_sm, fill=(60,60,60))
         y += 40
 
     # regla separadora
-    draw.rectangle([x, y, W - x, y + 2], fill=(100,100,100))  # Línea más oscura
+    draw.rectangle([x, y, W - x, y + 2], fill=(255,100,100))  # Línea más oscura
     y += 18
 
     # caja imagen
@@ -272,13 +280,13 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> I
 
     if tech:
         y += 6
-        draw.text((x, y), "DADES TÈCNIQUES", font=f_cap, fill=(34,34,34))
+        draw.text((x, y), "DATOS TÉCNICOS", font=f_cap, fill=(34,34,34))
         y += 18
-        draw.rectangle([x, y, W - x, y + 2], fill=(200,200,200))
+        draw.rectangle([x, y, W - x, y + 2], fill=(255,175,175))
         y += 10
 
         label_w = 105
-        for t in tech[:4]:
+        for t in tech:
             lab = t["label"].strip()[:18]
             val = t["value"].strip()
             draw.text((x, y), f"{lab}:", font=f_small, fill=(90,90,90))

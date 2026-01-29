@@ -6,11 +6,11 @@ from typing import Any, Dict, List
 from openai import OpenAI
 
 PIECE_TYPE_GUIDE: Dict[str, List[str]] = {
-    "computer": ["CPU", "RAM", "Emmagatzematge", "Gràfics/Bus"],
-    "console": ["CPU", "RAM/VRAM", "Suport (cartutx/disc)", "Any (aprox.)"],
-    "peripheral": ["Interfície", "Característica clau", "Compatibilitat", "Consum/altres"],
-    "software": ["Plataforma", "Any (aprox.)", "Ús/Gènere", "Requisits"],
-    "other": ["Dada 1", "Dada 2", "Dada 3", "Dada 4"],
+    "computer": ["CPU", "RAM", "Almacenamiento", "Gráficos", "Bus"],
+    "console": ["CPU", "RAM/VRAM", "Soporte (cartucho/disco)", "Año (aprox.)"],
+    "peripheral": ["Interfaz", "Característica clave", "Compatibilidad", "Consumo/otros"],
+    "software": ["Plataforma", "Año (aprox.)", "Uso/Género", "Requisitos"],
+    "other": ["Dato 1", "Dato 2", "Dato 3", "Dato 4"],
 }
 
 def suggest_card(name_query: str, piece_type: str, piece_number: str = "") -> Dict[str, Any]:
@@ -66,7 +66,7 @@ Reglas:
 - year: año de lanzamiento o aproximación (ej: "1977", "1980s", "1995-1998"). SIEMPRE incluye el año.
 - bullets: cortos, claros, máx ~80 caracteres cada uno.
 - tech: 4–6 líneas, prioriza estas etiquetas si aplica: {tech_labels}.
-- Idioma: valenciano (si te falta dato, no rellenes con fantasía).
+- Idioma: castellano (si te falta dato, no rellenes con fantasía).
 - "notes" es interno (no se imprime): pon ahí dudas o supuestos.
 
 Devuelve SOLO el JSON validando el schema.

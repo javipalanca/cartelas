@@ -1,18 +1,49 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Carteles 480×670</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
-  <body>
-    <header>
-      <h1>Carteles (480×670)</h1>
-      <div class="top-actions">
-        <button id="newBtn">Nueva cartela</button>
-        <input id="search" placeholder="Buscar (título, nº pieza, texto...)" />
-        <select id="typeFilter">
+  <body
+    class="font-sans m-0 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+  >
+    <header
+      class="p-4 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700"
+    >
+      <div class="flex justify-between items-center mb-2">
+        <h1 class="text-xl font-semibold m-0">Carteles (480×670)</h1>
+        <button
+          id="darkModeToggle"
+          class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
+          title="Cambiar tema"
+        >
+          🌙
+        </button>
+      </div>
+      <div class="flex gap-2 items-center flex-wrap">
+        <button
+          id="newBtn"
+          class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+        >
+          Nueva cartela
+        </button>
+        <input
+          id="search"
+          placeholder="Buscar (título, nº pieza, texto...)"
+          class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex-1 min-w-[200px] bg-white dark:bg-gray-700 dark:text-gray-100 text-sm"
+        />
+        <select
+          id="typeFilter"
+          class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100 text-sm"
+        >
           <option value="all">Todos los tipos</option>
           <option value="computer">Ordenador</option>
           <option value="console">Consola</option>
@@ -20,35 +51,76 @@
           <option value="software">Software</option>
           <option value="other">Otro</option>
         </select>
-        <button id="refreshBtn">Actualizar</button>
+        <button
+          id="refreshBtn"
+          class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+        >
+          Actualizar
+        </button>
       </div>
     </header>
 
-    <main class="grid">
-      <section class="panel list-panel" id="listPanel">
-        <h2>
-          <span>Listado</span>
-          <button class="hamburger" id="toggleList">☰</button>
+    <main
+      class="grid lg:grid-cols-[15%_40%_45%] md:grid-cols-1 gap-4 p-4 lg:h-[calc(100vh-140px)]"
+    >
+      <section
+        class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-2xl p-4 shadow-sm transition-all duration-300"
+        id="listPanel"
+      >
+        <h2
+          class="text-base font-semibold m-0 mb-2 flex justify-between items-center"
+        >
+          <span id="listTitle">Listado</span>
+          <button
+            class="bg-transparent border-none text-xl cursor-pointer px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md hidden lg:block"
+            id="toggleList"
+          >
+            ☰
+          </button>
         </h2>
-        <div id="list" class="list"></div>
+        <div id="list" class="flex flex-col gap-2"></div>
       </section>
 
-      <section class="panel editor-panel" id="editorPanel">
-        <h2>Editor</h2>
+      <section
+        class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-2xl p-4 shadow-sm"
+        id="editorPanel"
+      >
+        <h2 class="text-base font-semibold m-0 mb-3">Editor</h2>
 
-        <div class="row">
-          <label>Nº pieza</label>
-          <input id="piece_number" placeholder="MSI-01234" />
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm"
+            >Nº pieza</label
+          >
+          <input
+            id="piece_number"
+            placeholder="MSI-01234"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
+          />
         </div>
 
-        <div class="row">
-          <label>Vitrina</label>
-          <input id="cabinet_number" placeholder="V-5" />
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm"
+            >Vitrina</label
+          >
+          <input
+            id="cabinet_number"
+            placeholder="V-5"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
+          />
         </div>
 
-        <div class="row">
-          <label>Tipo</label>
-          <select id="piece_type">
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm">Tipo</label>
+          <select
+            id="piece_type"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
+          >
             <option value="computer">Ordenador</option>
             <option value="console">Consola</option>
             <option value="peripheral">Periférico</option>
@@ -57,77 +129,201 @@
           </select>
         </div>
 
-        <div class="row">
-          <label>Nombre / consulta</label>
-          <input id="name_query" placeholder="Apple II, IBM PS/2 Model 30..." />
-          <button id="suggestBtn">Generar sugerencia</button>
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm"
+            >Nombre / consulta</label
+          >
+          <input
+            id="name_query"
+            placeholder="Apple II, IBM PS/2 Model 30..."
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
+          />
+          <button
+            id="suggestBtn"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+          >
+            Generar sugerencia
+          </button>
         </div>
 
-        <hr />
+        <hr
+          class="border-0 border-t border-gray-200 dark:border-gray-700 my-4"
+        />
 
-        <div class="row">
-          <label>Título</label>
-          <input id="title" placeholder="APPLE II" />
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm">Título</label>
+          <input
+            id="title"
+            placeholder="APPLE II"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
+          />
         </div>
 
-        <div class="row">
-          <label>Año</label>
-          <input id="year" placeholder="1977" />
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm">Año</label>
+          <input
+            id="year"
+            placeholder="1977"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
+          />
         </div>
 
-        <div class="row">
-          <label>Subtítulo</label>
-          <input id="subtitle" placeholder="Microordenador personal" />
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm"
+            >Subtítulo</label
+          >
+          <input
+            id="subtitle"
+            placeholder="Microordenador personal"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
+          />
         </div>
 
-        <div class="row">
-          <label>Bullets (hasta 6)</label>
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-start my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm pt-2"
+            >Bullets (hasta 6)</label
+          >
           <div id="bullets"></div>
-          <button id="addBulletBtn" type="button">+ bullet</button>
+          <button
+            id="addBulletBtn"
+            type="button"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+          >
+            + bullet
+          </button>
         </div>
 
-        <div class="row">
-          <label>Ficha técnica</label>
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-start my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm pt-2"
+            >Ficha técnica</label
+          >
           <div id="tech"></div>
-          <button id="addTechBtn" type="button">+ línea técnica</button>
+          <button
+            id="addTechBtn"
+            type="button"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+          >
+            + línea técnica
+          </button>
         </div>
 
-        <div class="row">
-          <label>Imagen URL</label>
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm"
+            >Imagen URL</label
+          >
           <input
             id="image_url"
             type="text"
             placeholder="https://ejemplo.com/imagen.jpg"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
 
-        <div class="row">
-          <label>Dithering</label>
-          <select id="dither">
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm"
+            >Dithering</label
+          >
+          <select
+            id="dither"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
+          >
             <option value="0">Sin dithering</option>
             <option value="1">Suave</option>
             <option value="2">Fuerte</option>
           </select>
         </div>
 
-        <div class="row actions">
-          <button id="saveBtn">Guardar</button>
-          <button id="renderBtn">Renderizar + Descargar PNG</button>
-          <button id="renderTriBtn">Descargar TRI</button>
-          <button id="duplicateBtn">Duplicar</button>
+        <div class="grid md:grid-cols-3 grid-cols-1 gap-2 my-4">
+          <button
+            id="saveBtn"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+          >
+            Guardar
+          </button>
+          <button
+            id="renderBtn"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+          >
+            Renderizar + Descargar PNG
+          </button>
+          <button
+            id="renderTriBtn"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+          >
+            Descargar TRI
+          </button>
+          <button
+            id="duplicateBtn"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 md:col-span-3 col-span-1 text-sm"
+          >
+            Duplicar
+          </button>
         </div>
 
-        <div class="muted" id="status"></div>
+        <div
+          class="text-gray-600 dark:text-gray-400 text-xs mt-2"
+          id="status"
+        ></div>
       </section>
 
-      <section class="panel preview-panel" id="previewPanel">
-        <h2>Preview</h2>
-        <div class="preview">
-          <img id="previewImg" alt="preview" />
+      <section
+        class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-2xl p-4 shadow-sm flex flex-col"
+        id="previewPanel"
+      >
+        <h2 class="text-base font-semibold m-0 mb-2">Preview</h2>
+        <div
+          class="border border-dashed border-gray-400 dark:border-gray-600 rounded-xl p-2 flex justify-center bg-gray-50 dark:bg-gray-900 flex-1 min-h-[400px]"
+        >
+          <img
+            id="previewImg"
+            alt="preview"
+            width="480"
+            height="670"
+            class="max-w-[480px] max-h-[670px] w-auto h-auto border border-gray-300 dark:border-gray-600"
+            style="image-rendering: pixelated"
+          />
         </div>
       </section>
     </main>
 
     <script src="/static/app.js"></script>
+    <script>
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById("darkModeToggle");
+      const html = document.documentElement;
+
+      // Load saved theme preference or default to dark
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      if (savedTheme === "light") {
+        html.classList.remove("dark");
+        darkModeToggle.textContent = "☀️";
+      } else {
+        html.classList.add("dark");
+        darkModeToggle.textContent = "🌙";
+      }
+
+      darkModeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+        const isDark = html.classList.contains("dark");
+        darkModeToggle.textContent = isDark ? "🌙" : "☀️";
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      });
+    </script>
   </body>
 </html>
