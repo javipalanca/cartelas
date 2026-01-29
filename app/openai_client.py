@@ -64,6 +64,7 @@ Reglas:
 - No inventes datos. Si no estás seguro, usa rangos o expresiones tipo "segons model" / "aprox.".
 - Evita cifras ultra-específicas si no se conoce el modelo exacto.
 - year: año de lanzamiento o aproximación (ej: "1977", "1980s", "1995-1998"). SIEMPRE incluye el año.
+- subtitle: FABRICANTE de la pieza (ej: "IBM", "Apple", "Commodore", "Microsoft"). Usa el nombre comercial reconocido.
 - bullets: cortos, claros, máx ~80 caracteres cada uno.
 - tech: 4–6 líneas, prioriza estas etiquetas si aplica: {tech_labels}.
 - Idioma: castellano (si te falta dato, no rellenes con fantasía).

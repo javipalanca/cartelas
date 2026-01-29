@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Carteles 480×670</title>
+    <title>Carteleitor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -19,14 +19,27 @@
       class="p-4 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700"
     >
       <div class="flex justify-between items-center mb-2">
-        <h1 class="text-xl font-semibold m-0">Carteles (480×670)</h1>
-        <button
-          id="darkModeToggle"
-          class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
-          title="Cambiar tema"
-        >
-          🌙
-        </button>
+        <h1 class="text-xl font-semibold m-0">Carteleitor (480×670)</h1>
+        <div class="flex gap-2 items-center">
+          <span
+            id="userDisplay"
+            class="text-sm text-gray-600 dark:text-gray-400"
+          ></span>
+          <button
+            id="darkModeToggle"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
+            title="Cambiar tema"
+          >
+            🌙
+          </button>
+          <button
+            id="logoutBtn"
+            class="px-3 py-2 border border-gray-400 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 text-sm"
+            title="Cerrar sesión"
+          >
+            Salir
+          </button>
+        </div>
       </div>
       <div class="flex gap-2 items-center flex-wrap">
         <button
@@ -178,11 +191,11 @@
           class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
         >
           <label class="text-gray-700 dark:text-gray-300 text-sm"
-            >Subtítulo</label
+            >Fabricante</label
           >
           <input
             id="subtitle"
-            placeholder="Microordenador personal"
+            placeholder="IBM, Apple, Commodore..."
             class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
@@ -237,6 +250,20 @@
           class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
         >
           <label class="text-gray-700 dark:text-gray-300 text-sm"
+            >Subir imagen</label
+          >
+          <input
+            id="image_file"
+            type="file"
+            accept="image/*"
+            class="px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-gray-600 dark:file:text-gray-100"
+          />
+        </div>
+
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm"
             >Dithering</label
           >
           <select
@@ -247,6 +274,28 @@
             <option value="1">Suave</option>
             <option value="2">Fuerte</option>
           </select>
+        </div>
+
+        <div
+          class="grid md:grid-cols-[120px_1fr_auto] grid-cols-1 gap-2 items-center my-3"
+        >
+          <label class="text-gray-700 dark:text-gray-300 text-sm"
+            >Escala imagen</label
+          >
+          <input
+            id="image_scale"
+            type="range"
+            min="0.1"
+            max="3.0"
+            step="0.1"
+            value="1.0"
+            class="w-full"
+          />
+          <span
+            id="image_scale_value"
+            class="text-sm text-gray-700 dark:text-gray-300 w-12 text-right"
+            >1.0x</span
+          >
         </div>
 
         <div class="grid md:grid-cols-3 grid-cols-1 gap-2 my-4">
@@ -304,6 +353,39 @@
 
     <script src="/static/app.js"></script>
     <script>
+      // Auth check
+      function checkAuth() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "/login";
+          return false;
+        }
+
+        // Mostrar usuario
+        const username = localStorage.getItem("username");
+        const userDisplay = document.getElementById("userDisplay");
+        if (userDisplay && username) {
+          userDisplay.textContent = `Hola, ${username}`;
+        }
+
+        return true;
+      }
+
+      // Logout
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          window.location.href = "/login";
+        });
+      }
+
+      // Verificar autenticación al cargar
+      if (!checkAuth()) {
+        document.body.style.display = "none";
+      }
+
       // Dark mode toggle
       const darkModeToggle = document.getElementById("darkModeToggle");
       const html = document.documentElement;

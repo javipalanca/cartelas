@@ -1,0 +1,166 @@
+2026-01-29 21:41:38 - root - INFO - Iniciando aplicación Cartelas
+2026-01-29 21:41:38 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:41:43 - root - INFO - Iniciando aplicación Cartelas
+2026-01-29 21:41:43 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:41:47 - root - INFO - Iniciando aplicación Cartelas
+2026-01-29 21:41:47 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:41:52 - root - INFO - Iniciando aplicación Cartelas
+2026-01-29 21:41:52 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:42:00 - root - INFO - Iniciando aplicación Cartelas
+2026-01-29 21:42:00 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:49:39 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 21:49:39 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:49:40 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 21:49:40 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:49:58 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 21:49:58 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:50:21 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 21:50:21 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:50:45 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 21:50:45 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:51:12 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 21:51:12 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:51:55 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 21:51:55 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 21:52:29 - app.auth - INFO - User 'admin' authenticated successfully
+2026-01-29 21:52:29 - root - INFO - User 'admin' logged in successfully
+2026-01-29 21:57:11 - root - INFO - User 'admin' updating card b291650c1504
+2026-01-29 21:57:11 - root - INFO - Card updated: b291650c1504
+2026-01-29 21:57:28 - app.auth - INFO - User 'admin' authenticated successfully
+2026-01-29 21:57:29 - root - INFO - User 'admin' logged in successfully
+2026-01-29 21:58:49 - httpx - INFO - HTTP Request: POST https://blackwell.gti-ia.upv.es/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-29 22:00:21 - root - INFO - User 'admin' creating new card
+2026-01-29 22:00:21 - root - INFO - Card created: 766a249e83ab
+2026-01-29 22:01:01 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:01:01 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:01:02 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:01:02 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:01:11 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:01:11 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:01:13 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:01:13 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:01:17 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:01:17 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:01:21 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:01:21 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:02:12 - root - INFO - User 'admin' updating card 766a249e83ab
+2026-01-29 22:02:12 - root - INFO - Card updated: 766a249e83ab
+2026-01-29 22:03:47 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:03:47 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:03:48 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:03:48 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:03:52 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:03:52 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:03:58 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:03:58 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:04:03 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:04:03 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:04:05 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:04:05 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:06:33 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:06:33 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:07:24 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:07:24 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:07:32 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:07:32 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:07:50 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:07:50 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:08:49 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:08:49 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:09:01 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:09:01 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:09:02 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:09:02 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:10:22 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:10:22 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:10:51 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:10:51 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:11:01 - httpx - INFO - HTTP Request: POST https://blackwell.gti-ia.upv.es/v1/images/edits "HTTP/1.1 400 Bad Request"
+2026-01-29 22:11:59 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:11:59 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:12:11 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:12:11 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:12:26 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:12:26 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:13:54 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:13:54 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:15:32 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:15:32 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:15:34 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:15:34 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:17:14 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:17:14 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:17:17 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:17:17 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:17:24 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:17:24 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:17:51 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:17:51 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:17:53 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:17:53 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:17:59 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:17:59 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:20:49 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:20:49 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:21:06 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:21:06 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:21:17 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:21:17 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:21:40 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:21:40 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:22:41 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:22:41 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:22:56 - root - INFO - Image uploaded and cached: /Users/jpalanca/devel/cartelas/data/images/ms_dos_62.png
+2026-01-29 22:22:57 - root - INFO - User 'admin' updating card 766a249e83ab
+2026-01-29 22:22:57 - root - INFO - Card updated: 766a249e83ab
+2026-01-29 22:24:39 - root - INFO - Image uploaded and cached: /Users/jpalanca/devel/cartelas/data/images/ms_dos_62.png
+2026-01-29 22:24:49 - root - INFO - User 'admin' updating card 766a249e83ab
+2026-01-29 22:24:49 - root - INFO - Card updated: 766a249e83ab
+2026-01-29 22:25:37 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:25:37 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:26:00 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:26:00 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:28:31 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:28:31 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:29:12 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:29:12 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:29:22 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:29:22 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:29:32 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:29:32 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:30:53 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:30:53 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:31:26 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:31:26 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:32:09 - root - INFO - User 'admin' updating card 766a249e83ab
+2026-01-29 22:32:09 - root - INFO - Card updated: 766a249e83ab
+2026-01-29 22:32:18 - root - INFO - User 'admin' updating card 766a249e83ab
+2026-01-29 22:32:18 - root - INFO - Card updated: 766a249e83ab
+2026-01-29 22:34:07 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:34:07 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:34:52 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:34:52 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:35:29 - root - INFO - User 'admin' updating card 766a249e83ab
+2026-01-29 22:35:29 - root - INFO - Card updated: 766a249e83ab
+2026-01-29 22:35:35 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:35:35 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:36:02 - httpx - INFO - HTTP Request: POST https://blackwell.gti-ia.upv.es/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-29 22:36:03 - root - INFO - === Iniciando aplicación Cartelas ===
+2026-01-29 22:36:03 - root - INFO - Base de datos cargada desde: /Users/jpalanca/devel/cartelas/data/cards.json
+2026-01-29 22:36:15 - root - INFO - User 'admin' updating card b291650c1504
+2026-01-29 22:36:15 - root - INFO - Card updated: b291650c1504
+2026-01-29 22:36:44 - httpx - INFO - HTTP Request: POST https://blackwell.gti-ia.upv.es/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-29 22:36:57 - root - INFO - User 'admin' updating card 3b4dfeefa293
+2026-01-29 22:36:57 - root - INFO - Card updated: 3b4dfeefa293
+2026-01-29 22:37:07 - root - INFO - User 'admin' updating card 3b4dfeefa293
+2026-01-29 22:37:07 - root - INFO - Card updated: 3b4dfeefa293
+2026-01-29 22:38:01 - httpx - INFO - HTTP Request: POST https://blackwell.gti-ia.upv.es/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-29 22:40:46 - root - INFO - User 'admin' creating new card
+2026-01-29 22:40:46 - root - INFO - Card created: 00cfafbb8161
+2026-01-29 22:40:51 - root - INFO - Image uploaded and cached: /Users/jpalanca/devel/cartelas/data/images/dps8.png
+2026-01-29 22:40:52 - root - INFO - User 'admin' updating card 00cfafbb8161
+2026-01-29 22:40:52 - root - INFO - Card updated: 00cfafbb8161
+2026-01-29 22:41:15 - root - INFO - User 'admin' updating card 00cfafbb8161
+2026-01-29 22:41:15 - root - INFO - Card updated: 00cfafbb8161
+2026-01-29 22:44:18 - root - INFO - User 'admin' updating card 00cfafbb8161
+2026-01-29 22:44:18 - root - INFO - Card updated: 00cfafbb8161

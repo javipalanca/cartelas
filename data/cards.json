@@ -4,94 +4,185 @@
     {
       "id": "3b4dfeefa293",
       "created_at": "2026-01-29T18:15:19",
-      "updated_at": "2026-01-29T21:27:36",
+      "updated_at": "2026-01-29T22:37:07",
       "data": {
         "piece_number": "1",
         "piece_type": "computer",
         "name_query": "Apple II",
         "cabinet_number": "",
         "title": "Apple II",
-        "subtitle": "",
+        "subtitle": "Apple Computer",
         "year": "1977",
         "bullets": [
-          "Primer microordenador de gran éxito comercial.",
-          "Caja plástica con teclado integrado y ranura de expansión.",
-          "Compatible con cartuchos y discos de 5.25\" (opcional).",
-          "Gran comunidad de usuarios y software educativo.",
-          "Base de la revolución de la informática doméstica."
+          "Primer microordenador de Apple con carcasa de plástico.",
+          "Teclado integrado, monitor opcional mediante conector de video.",
+          "8 ranuras de expansión abiertas para periféricos y discos.",
+          "Impulsó la informática educativa y el desarrollo de videojuegos.",
+          "Base de la familia Apple IIe/IIc y del legado de Apple."
         ],
         "tech": [
           {
             "label": "CPU",
-            "value": "MOS Technology 6502 a 1 MHz"
+            "value": "MOS 6502, ~1 MHz"
           },
           {
             "label": "RAM",
-            "value": "4 KB iniciales, ampliable a 48 KB"
+            "value": "4 KB base, ampliable a 48 KB (modelos posteriores)"
           },
           {
             "label": "Almacenamiento",
-            "value": "Cassette y unidad de disquete de 5.25\" (opcional)"
+            "value": "Cinta magnética; opcional disco 5.25\" (Disk II)"
           },
           {
             "label": "Gráficos",
-            "value": "Video 280×192 píxeles, 6 colores"
+            "value": "Baja resolución 280×192, alta 560×192, 6 colores"
           },
           {
             "label": "Bus",
-            "value": "Ranura de expansión de 8 bits"
+            "value": "Arquitectura de 6502, 7 ranuras de expansión"
           }
         ],
         "notes": "",
         "image_path": "https://static.wikia.nocookie.net/ipod/images/1/1e/Apple_II.png/revision/latest/thumbnail/width/360/height/450?cb=20100820004506",
-        "render_path": "/Users/jpalanca/devel/cartelas/data/renders/3b4dfeefa293.png"
+        "render_path": "/Users/jpalanca/devel/cartelas/data/renders/3b4dfeefa293.png",
+        "image_scale": 1.1
       }
     },
     {
       "id": "b291650c1504",
       "created_at": "2026-01-29T21:32:01",
-      "updated_at": "2026-01-29T21:32:01",
+      "updated_at": "2026-01-29T22:36:15",
       "data": {
         "piece_number": "2",
         "piece_type": "computer",
         "name_query": "IBM PC PS/2",
         "cabinet_number": "",
         "title": "IBM PC PS/2",
-        "subtitle": "",
+        "subtitle": "IBM",
         "year": "1987‑1990",
         "bullets": [
-          "Lanzamiento de la línea IBM PS/2 en 1987",
-          "Introdujo el conector mini‑DIN para teclado y ratón",
-          "Primer uso del bus Micro Channel (MCA) de IBM",
-          "Disponibles modelos con CPUs 80286, 80386 y 80486",
-          "Memoria típica entre 1 y 4 MB, ampliable",
-          "Soporte para discos duros internos y unidades de disquete de 5.25 in"
+          "Introducción de la arquitectura de bus Micro Channel (MCA).",
+          "Conexión estándar PS/2 para teclado y ratón.",
+          "CPU varía: 80286, 80386, 80486 según modelo.",
+          "RAM de 1 a 16 MB, ampliable a 64 MB en versiones posteriores.",
+          "Almacenamiento: disquete 3.5\" y HDD entre 20‑120 MB."
         ],
         "tech": [
           {
             "label": "CPU",
-            "value": "Modelos con Intel 80286, 80386 o 80486 según la variante"
+            "value": "Intel 80286‑80486, según configuración"
           },
           {
             "label": "RAM",
-            "value": "Entre 1 MB y 4 MB de RAM, ampliable mediante ranuras ISA/MCA"
+            "value": "1‑16 MB base, ampliable hasta 64 MB"
           },
           {
             "label": "Almacenamiento",
-            "value": "Unidad de disquete de 5,25 in y opciones de HDD interno"
+            "value": "3.5\" floppy (720 KB) + HDD 20‑120 MB"
           },
           {
             "label": "Gráficos",
-            "value": "Gráficos compatibles VGA/8514/A"
+            "value": "VGA (256 colores), opcional SVGA"
           },
           {
             "label": "Bus",
-            "value": "Bus Micro Channel (MCA)"
+            "value": "Micro Channel Architecture (MCA) de 16‑bit"
           }
         ],
         "notes": "",
         "image_path": "https://www.profesionalreview.com/wp-content/uploads/2020/12/IBM-PS2-7.jpg",
-        "render_path": null
+        "render_path": null,
+        "image_scale": 1.0
+      }
+    },
+    {
+      "id": "766a249e83ab",
+      "created_at": "2026-01-29T22:00:21",
+      "updated_at": "2026-01-29T22:35:29",
+      "data": {
+        "piece_number": "3",
+        "piece_type": "software",
+        "name_query": "MS-DOS 6.2",
+        "cabinet_number": "",
+        "title": "MS-DOS 6.2",
+        "subtitle": "Microsoft",
+        "year": "1994",
+        "bullets": [
+          "Sistema operativo de 16 bits para PCs compatibles IBM.",
+          "Última rama antes de la integración con Windows 95.",
+          "Incluye mejoras de memoria y soporte de discos grandes.",
+          "Distribuido principalmente con Windows 95/98.",
+          "Reemplazado por MS-DOS 6.22 y luego por MS-DOS 7.0."
+        ],
+        "tech": [
+          {
+            "label": "Plataforma",
+            "value": "PC compatibles Intel x86"
+          },
+          {
+            "label": "Año (aprox.)",
+            "value": "1994"
+          },
+          {
+            "label": "Uso/Género",
+            "value": "Sistema operativo de línea de comandos, uso general"
+          },
+          {
+            "label": "Requisitos",
+            "value": "CPU 8086/80286, 640 KB RAM, disco floppy o HDD"
+          }
+        ],
+        "notes": "",
+        "image_path": "/Users/jpalanca/devel/cartelas/data/images/ms_dos_62.png",
+        "render_path": null,
+        "image_scale": 1.4
+      }
+    },
+    {
+      "id": "00cfafbb8161",
+      "created_at": "2026-01-29T22:40:46",
+      "updated_at": "2026-01-29T22:44:18",
+      "data": {
+        "piece_number": "1",
+        "piece_type": "computer",
+        "name_query": "Cii Honeywell Bull DPS/8",
+        "cabinet_number": "",
+        "title": "DPS/8",
+        "subtitle": "Cii Honeywell Bull",
+        "year": "1983",
+        "bullets": [
+          "Mainframe de 32 bits orientado a procesamiento de datos",
+          "Arquitectura microprogramada, 2‑5 MHz",
+          "Memoria principal de hasta 2 MiB (core o semiconductora)",
+          "Compatible con sistemas operativos GCOS y BS2000",
+          "Empleada en bancos, administración pública y grandes empresas"
+        ],
+        "tech": [
+          {
+            "label": "CPU",
+            "value": "32‑bit, microprogramada, 2‑5 MHz"
+          },
+          {
+            "label": "RAM",
+            "value": "Hasta 2 MiB (core/semiconductor)"
+          },
+          {
+            "label": "Almacenamiento",
+            "value": "Cintas y discos magnéticos, capacidad total ≈200 MB"
+          },
+          {
+            "label": "Gráficos",
+            "value": "Terminal de texto, sin gráficos dedicados"
+          },
+          {
+            "label": "Bus",
+            "value": "Bus de datos de 32 bits, direccionamiento multiplexado"
+          }
+        ],
+        "notes": "",
+        "image_path": "/Users/jpalanca/devel/cartelas/data/images/dps8.png",
+        "render_path": null,
+        "image_scale": 1.1
       }
     }
   ]

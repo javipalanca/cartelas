@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Carteles - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
+  </head>
+  <body
+    class="font-sans m-0 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-screen"
+  >
+    <div class="w-full max-w-md">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-300 dark:border-gray-700"
+      >
+        <h1 class="text-3xl font-bold text-center mb-2">Carteles</h1>
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-8">480×670</p>
+
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label for="username" class="block text-sm font-medium mb-2">
+              Usuario
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="admin"
+              required
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-medium mb-2">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              required
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition mt-6"
+          >
+            Iniciar sesión
+          </button>
+        </form>
+
+        <div
+          id="error"
+          class="mt-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-lg hidden"
+        ></div>
+        <div
+          id="loading"
+          class="mt-4 text-center text-gray-600 dark:text-gray-400 hidden"
+        >
+          Cargando...
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("loginForm");
+      const errorDiv = document.getElementById("error");
+      const loadingDiv = document.getElementById("loading");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorDiv.classList.add("hidden");
+        loadingDiv.classList.remove("hidden");
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const params = new URLSearchParams();
+          params.append("username", username);
+          params.append("password", password);
+
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: params,
+          });
+
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.detail || "Login failed");
+          }
+
+          const data = await response.json();
+          localStorage.setItem("token", data.access_token);
+          localStorage.setItem("username", data.username);
+          window.location.href = "/";
+        } catch (error) {
+          errorDiv.textContent = error.message;
+          errorDiv.classList.remove("hidden");
+          loadingDiv.classList.add("hidden");
+        }
+      });
+
+      // Si ya hay token, redirigir a home
+      if (localStorage.getItem("token")) {
+        window.location.href = "/";
+      }
+    </script>
+  </body>
+</html>

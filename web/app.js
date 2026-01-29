@@ -5,6 +5,34 @@ let previewTimeout = null;
 const el = (id) => document.getElementById(id);
 const status = (msg) => el("status").textContent = msg || "";
 
+// Helper para convertir texto a slug
+function slugify(text) {
+  if (!text) return "unnamed";
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[áàäâ]/g, 'a')
+    .replace(/[éèëê]/g, 'e')
+    .replace(/[íìïî]/g, 'i')
+    .replace(/[óòöô]/g, 'o')
+    .replace(/[úùüû]/g, 'u')
+    .replace(/ñ/g, 'n')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/-/g, "_")
+    .substring(0, 80) || "unnamed";
+}
+
+// Helper para agregar token a las requests
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+  return {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json"
+  };
+}
+
 function emptyCardData() {
   return {
     piece_number: "",
@@ -23,7 +51,8 @@ function emptyCardData() {
     ],
     notes: "",
     image_path: null,
-    render_path: null
+    render_path: null,
+    image_scale: 1.0
   };
 }
 
@@ -102,6 +131,8 @@ function syncFormFromData() {
   el("year").value = currentData.year || "";
   el("subtitle").value = currentData.subtitle || "";
   el("image_url").value = currentData.image_path || "";
+  el("image_scale").value = currentData.image_scale || 1.0;
+  el("image_scale_value").textContent = `${(currentData.image_scale || 1.0).toFixed(1)}x`;
   renderBulletsUI(currentData.bullets || []);
   renderTechUI(currentData.tech || []);
   updatePreview();
@@ -116,6 +147,7 @@ function syncDataFromForm() {
   currentData.year = el("year").value;
   currentData.subtitle = el("subtitle").value;
   currentData.image_path = el("image_url").value.trim() || null;
+  currentData.image_scale = parseFloat(el("image_scale").value) || 1.0;
   // bullets + tech ya se actualizan por oninput
   updatePreview();
 }
@@ -136,7 +168,7 @@ async function updatePreview() {
     try {
       const response = await api("/api/preview", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           data: currentData,
           dither: parseInt(el("dither").value, 10)
@@ -229,6 +261,59 @@ document.addEventListener("DOMContentLoaded", () => {
   // Listener para dithering
   el("dither").onchange = () => updatePreview();
 
+  // Listener para escala de imagen
+  el("image_scale").oninput = (e) => {
+    const scale = parseFloat(e.target.value);
+    el("image_scale_value").textContent = `${scale.toFixed(1)}x`;
+    currentData.image_scale = scale;
+    updatePreview();
+  };
+
+  // Listener para subir imagen desde archivo
+  el("image_file").onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!currentId) {
+      status("Debes guardar la cartela primero antes de subir una imagen");
+      e.target.value = ""; // Limpiar input
+      return;
+    }
+
+    status("Subiendo imagen...");
+    
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/cards/${currentId}/upload-image`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error(await response.text());
+
+      const result = await response.json();
+      currentData.image_path = result.image_path;
+      
+      // Actualizar el campo de URL para mostrar la ruta
+      el("image_url").value = result.image_path;
+      
+      // Limpiar el input de archivo
+      e.target.value = "";
+      
+      status("Imagen subida correctamente!");
+      updatePreview();
+    } catch (error) {
+      status(`Error al subir imagen: ${error.message}`);
+      e.target.value = "";
+    }
+  };
+
   // Botón: Nueva cartela
   el("newBtn").onclick = () => {
     currentId = null;
@@ -252,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await api("/api/suggest", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           name_query: currentData.name_query,
           piece_type: currentData.piece_type,
@@ -295,14 +380,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // Actualizar cartela existente
         response = await api(`/api/cards/${currentId}`, {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ data: currentData }),
         });
       } else {
         // Crear nueva cartela
         response = await api("/api/cards", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ data: currentData }),
         });
       }
@@ -334,8 +419,10 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("data", JSON.stringify(currentData));
       formData.append("dither", el("dither").value);
 
+      const token = localStorage.getItem("token");
       const response = await fetch(`/api/cards/${currentId}/render`, {
         method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
         body: formData,
       });
 
@@ -347,10 +434,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // Actualizar preview
       el("previewImg").src = url;
       
-      // Descargar automáticamente
+      // Descargar automáticamente con nombre del título
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${currentId}.png`;
+      const filename = slugify(currentData.title || currentId);
+      a.download = `${filename}.png`;
       a.click();
       
       status("Renderizado y descargado!");
@@ -370,9 +458,13 @@ document.addEventListener("DOMContentLoaded", () => {
     status("Generando TRI...");
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`/api/cards/${currentId}/render.tri`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           dither: parseInt(el("dither").value, 10)
         }),
@@ -383,10 +475,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       
-      // Descargar automáticamente
+      // Descargar automáticamente con nombre del título
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${currentId}.tri`;
+      const filename = slugify(currentData.title || currentId);
+      a.download = `${filename}.tri`;
       a.click();
       
       status("TRI descargado!");
@@ -405,6 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
     status("Duplicando...");
     try {
       const response = await api(`/api/cards/${currentId}/duplicate`, {
+        headers: getAuthHeaders(),
         method: "POST",
       });
       

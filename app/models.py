@@ -27,6 +27,7 @@ class CardData(BaseModel):
     # rutas
     image_path: Optional[str] = None
     render_path: Optional[str] = None
+    image_scale: float = Field(default=1.0, ge=0.1, le=3.0)  # Escala de imagen (0.1 a 3.0)
 
 class CardRecord(BaseModel):
     id: str
