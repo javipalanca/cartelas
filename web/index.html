@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Carteles 480×670</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Carteles (480×670)</h1>
+      <div class="top-actions">
+        <button id="newBtn">Nueva cartela</button>
+        <input id="search" placeholder="Buscar (título, nº pieza, texto...)" />
+        <select id="typeFilter">
+          <option value="all">Todos los tipos</option>
+          <option value="computer">Ordenador</option>
+          <option value="console">Consola</option>
+          <option value="peripheral">Periférico</option>
+          <option value="software">Software</option>
+          <option value="other">Otro</option>
+        </select>
+        <button id="refreshBtn">Actualizar</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel list-panel" id="listPanel">
+        <h2>
+          <span>Listado</span>
+          <button class="hamburger" id="toggleList">☰</button>
+        </h2>
+        <div id="list" class="list"></div>
+      </section>
+
+      <section class="panel editor-panel" id="editorPanel">
+        <h2>Editor</h2>
+
+        <div class="row">
+          <label>Nº pieza</label>
+          <input id="piece_number" placeholder="MSI-01234" />
+        </div>
+
+        <div class="row">
+          <label>Vitrina</label>
+          <input id="cabinet_number" placeholder="V-5" />
+        </div>
+
+        <div class="row">
+          <label>Tipo</label>
+          <select id="piece_type">
+            <option value="computer">Ordenador</option>
+            <option value="console">Consola</option>
+            <option value="peripheral">Periférico</option>
+            <option value="software">Software</option>
+            <option value="other" selected>Otro</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label>Nombre / consulta</label>
+          <input id="name_query" placeholder="Apple II, IBM PS/2 Model 30..." />
+          <button id="suggestBtn">Generar sugerencia</button>
+        </div>
+
+        <hr />
+
+        <div class="row">
+          <label>Título</label>
+          <input id="title" placeholder="APPLE II" />
+        </div>
+
+        <div class="row">
+          <label>Año</label>
+          <input id="year" placeholder="1977" />
+        </div>
+
+        <div class="row">
+          <label>Subtítulo</label>
+          <input id="subtitle" placeholder="Microordenador personal" />
+        </div>
+
+        <div class="row">
+          <label>Bullets (hasta 6)</label>
+          <div id="bullets"></div>
+          <button id="addBulletBtn" type="button">+ bullet</button>
+        </div>
+
+        <div class="row">
+          <label>Ficha técnica</label>
+          <div id="tech"></div>
+          <button id="addTechBtn" type="button">+ línea técnica</button>
+        </div>
+
+        <div class="row">
+          <label>Imagen URL</label>
+          <input
+            id="image_url"
+            type="text"
+            placeholder="https://ejemplo.com/imagen.jpg"
+          />
+        </div>
+
+        <div class="row">
+          <label>Dithering</label>
+          <select id="dither">
+            <option value="0">Sin dithering</option>
+            <option value="1">Suave</option>
+            <option value="2">Fuerte</option>
+          </select>
+        </div>
+
+        <div class="row actions">
+          <button id="saveBtn">Guardar</button>
+          <button id="renderBtn">Renderizar + Descargar PNG</button>
+          <button id="renderTriBtn">Descargar TRI</button>
+          <button id="duplicateBtn">Duplicar</button>
+        </div>
+
+        <div class="muted" id="status"></div>
+      </section>
+
+      <section class="panel preview-panel" id="previewPanel">
+        <h2>Preview</h2>
+        <div class="preview">
+          <img id="previewImg" alt="preview" />
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "cards": [
+    {
+      "id": "3b4dfeefa293",
+      "created_at": "2026-01-29T18:15:19",
+      "updated_at": "2026-01-29T19:20:48",
+      "data": {
+        "piece_number": "1",
+        "piece_type": "computer",
+        "name_query": "Apple II",
+        "cabinet_number": "",
+        "title": "Apple II",
+        "subtitle": "Ordinador personal d'Apple",
+        "year": "1977",
+        "bullets": [
+          "Primer ordinador personal de mà d'Apple, dissenyat per a llars.",
+          "Llençat al mercat el 1977 amb preu d'uns 1.300 dòlars.",
+          "Suite de programari integrat: BASIC, NetWare i videojocs.",
+          "Aproximadament 4 KB de RAM, ampliable fins a 48 KB.",
+          "Emmagatzematge per cinta i, més tard, unitat Disk II de 140 KB."
+        ],
+        "tech": [
+          {
+            "label": "CPU",
+            "value": "MOS 6502 a ~1 MHz"
+          },
+          {
+            "label": "RAM",
+            "value": "4 KB (base), ampliable fins a 48 KB"
+          },
+          {
+            "label": "Emmagatzematge",
+            "value": "Cinta de tòrcul i disc de 5,25\" (140 KB)"
+          },
+          {
+            "label": "Gràfics/Bus",
+            "value": "40×24 text; 280×192 (color) i 560×192 (blanc/negre)"
+          }
+        ],
+        "notes": "",
+        "image_path": "https://static.wikia.nocookie.net/ipod/images/1/1e/Apple_II.png/revision/latest/thumbnail/width/360/height/450?cb=20100820004506",
+        "render_path": "/Users/jpalanca/devel/cartelas/data/renders/3b4dfeefa293.png"
+      }
+    }
+  ]
+}
