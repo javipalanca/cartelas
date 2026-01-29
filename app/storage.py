@@ -29,7 +29,7 @@ class JsonStore:
             json.dump(obj, f, ensure_ascii=False, indent=2)
         tmp.replace(self.path)
 
-    def list_cards(self, q: Optional[str] = None, piece_type: Optional[str] = None) -> List[CardRecord]:
+    def list_cards(self, q: Optional[str] = None, piece_type: Optional[str] = None, skip: int = 0, limit: int = 1000) -> tuple:
         with self._lock:
             db = self._read()
             cards = [CardRecord.model_validate(c) for c in db.get("cards", [])]
@@ -55,7 +55,11 @@ class JsonStore:
 
         # orden por updated_at desc
         cards.sort(key=lambda c: c.updated_at, reverse=True)
-        return cards
+        
+        # Aplicar paginación
+        total = len(cards)
+        paginated = cards[skip:skip + limit]
+        return paginated, total
 
     def get(self, card_id: str) -> Optional[CardRecord]:
         with self._lock:
@@ -104,3 +108,15 @@ class JsonStore:
         # aquí la mantenemos (si existe) para comodidad
         rec = self.create(d)
         return rec
+
+    def delete(self, card_id: str) -> bool:
+        with self._lock:
+            db = self._read()
+            cards = db.get("cards", [])
+            for i, c in enumerate(cards):
+                if c.get("id") == card_id:
+                    cards.pop(i)
+                    db["cards"] = cards
+                    self._write(db)
+                    return True
+        return False

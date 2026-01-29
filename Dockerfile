@@ -29,10 +29,5 @@ RUN mkdir -p /tmp/cartelas_fonts
 # Exponer puerto
 EXPOSE 8000
 
-# Variables de entorno por defecto
-ENV OPENAI_API_KEY=""
-ENV OPENAI_MODEL="gpt-4o-mini"
-ENV BASE_URL=""
-
 # Comando para iniciar la aplicación
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

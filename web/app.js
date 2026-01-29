@@ -1,6 +1,9 @@
 let currentId = null;
 let currentData = null;
 let previewTimeout = null;
+let currentPage = 1;
+let totalCards = 0;
+const CARDS_PER_PAGE = 25;
 
 const el = (id) => document.getElementById(id);
 const status = (msg) => el("status").textContent = msg || "";
@@ -71,7 +74,7 @@ function renderBulletsUI(bullets) {
     };
     const del = document.createElement("button");
     del.className = "smallbtn";
-    del.textContent = "🗑";
+    del.textContent = "✕";
     del.onclick = () => {
       currentData.bullets.splice(i,1);
       renderBulletsUI(currentData.bullets);
@@ -108,7 +111,7 @@ function renderTechUI(tech) {
 
     const del = document.createElement("button");
     del.className = "smallbtn";
-    del.textContent = "🗑";
+    del.textContent = "✕";
     del.onclick = () => {
       currentData.tech.splice(i,1);
       renderTechUI(currentData.tech);
@@ -185,36 +188,104 @@ async function updatePreview() {
   }, 500);
 }
 
-async function loadCardsList(q = "", piece_type = "") {
+async function loadCardsList(q = "", piece_type = "", page = 1) {
   try {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (piece_type && piece_type !== "all") params.set("piece_type", piece_type);
     
+    const skip = (page - 1) * CARDS_PER_PAGE;
+    params.set("skip", skip);
+    params.set("limit", CARDS_PER_PAGE);
+    
     const response = await api(`/api/cards?${params}`);
-    const cards = await response.json();
+    const result = await response.json();
+    
+    // Manejo tanto de respuesta simple (array) como de objeto con total
+    let cards, total;
+    if (Array.isArray(result)) {
+      cards = result;
+      total = cards.length;
+    } else {
+      cards = result.cards || [];
+      total = result.total || 0;
+    }
+    
+    totalCards = total;
+    currentPage = page;
     
     const listEl = el("list");
     listEl.innerHTML = "";
     
-    cards.forEach(card => {
-      const row = document.createElement("div");
-      row.className = "cardrow";
-      const cabinetDisplay = card.cabinet_number ? `Vitrina ${card.cabinet_number} · ` : "";
-      row.innerHTML = `
-        <div>
-          <div class="title">${card.title || "Sin título"}</div>
-          <div class="meta">${cabinetDisplay}${card.piece_number || ""} · ${card.piece_type || ""}</div>
-        </div>
-        <div class="actions">
-          <button class="smallbtn" onclick="loadCard('${card.id}')">Editar</button>
-        </div>
-      `;
-      listEl.appendChild(row);
-    });
+    if (cards.length === 0) {
+      listEl.innerHTML = '<div class="text-gray-500 text-sm py-4">No hay cartelas para mostrar</div>';
+    } else {
+      cards.forEach(card => {
+        const row = document.createElement("div");
+        row.className = "cardrow";
+        const cabinetDisplay = card.cabinet_number ? `Vitrina ${card.cabinet_number} · ` : "";
+        row.innerHTML = `
+          <div style="cursor: pointer; flex: 1;" onclick="loadCard('${card.id}')">
+            <div class="title">${card.title || "Sin título"}</div>
+            <div class="meta">${cabinetDisplay}${card.piece_number || ""} · ${card.piece_type || ""}</div>
+          </div>
+          <div class="actions">
+            <button class="smallbtn" onclick="deleteCard('${card.id}', event)" title="Borrar cartela">✕</button>
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
+    }
+    
+    renderPagination(total, page);
   } catch (e) {
     console.error("Error al cargar lista:", e);
   }
+}
+
+function renderPagination(total, currentPage) {
+  const totalPages = Math.ceil(total / CARDS_PER_PAGE);
+  const paginationEl = el("pagination");
+  
+  if (!paginationEl) return;
+  
+  paginationEl.innerHTML = "";
+  
+  if (totalPages <= 1) return;
+  
+  // Botón anterior
+  const prevBtn = document.createElement("button");
+  prevBtn.className = "smallbtn";
+  prevBtn.textContent = "← Anterior";
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.onclick = () => {
+    if (currentPage > 1) {
+      const q = el("search").value;
+      const piece_type = el("typeFilter").value;
+      loadCardsList(q, piece_type, currentPage - 1);
+    }
+  };
+  paginationEl.appendChild(prevBtn);
+  
+  // Números de página
+  const pageInfo = document.createElement("span");
+  pageInfo.className = "text-sm text-gray-600 dark:text-gray-400";
+  pageInfo.textContent = ` ${currentPage} de ${totalPages} `;
+  paginationEl.appendChild(pageInfo);
+  
+  // Botón siguiente
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "smallbtn";
+  nextBtn.textContent = "Siguiente →";
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.onclick = () => {
+    if (currentPage < totalPages) {
+      const q = el("search").value;
+      const piece_type = el("typeFilter").value;
+      loadCardsList(q, piece_type, currentPage + 1);
+    }
+  };
+  paginationEl.appendChild(nextBtn);
 }
 
 async function loadCard(id) {
@@ -227,6 +298,33 @@ async function loadCard(id) {
     status(`Cargada: ${currentId}`);
   } catch (e) {
     status(`Error al cargar: ${e.message}`);
+  }
+}
+
+async function deleteCard(id, event) {
+  event.stopPropagation();
+  if (!confirm("¿Estás seguro de que quieres borrar esta cartela?")) {
+    return;
+  }
+  try {
+    status("Borrando...");
+    const response = await api(`/api/cards/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders()
+    });
+    if (response.ok) {
+      status("Cartela borrada");
+      if (currentId === id) {
+        currentId = null;
+        currentData = emptyCardData();
+        syncFormFromData();
+      }
+      await loadCardsList(el("search").value, el("typeFilter").value, 1);
+    } else {
+      status("Error al borrar la cartela");
+    }
+  } catch (e) {
+    status(`Error al borrar: ${e.message}`);
   }
 }
 
@@ -244,13 +342,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Búsqueda y filtros
   el("search").oninput = () => {
-    loadCardsList(el("search").value, el("typeFilter").value);
+    loadCardsList(el("search").value, el("typeFilter").value, 1);
   };
   el("typeFilter").onchange = () => {
-    loadCardsList(el("search").value, el("typeFilter").value);
+    loadCardsList(el("search").value, el("typeFilter").value, 1);
   };
   el("refreshBtn").onclick = () => {
-    loadCardsList(el("search").value, el("typeFilter").value);
+    loadCardsList(el("search").value, el("typeFilter").value, 1);
   };
 
   // Listeners en tiempo real para actualizar preview
@@ -398,7 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
       status(`Guardado! ID: ${currentId}`);
       
       // Actualizar listado
-      loadCardsList(el("search").value, el("typeFilter").value);
+      loadCardsList(el("search").value, el("typeFilter").value, 1);
     } catch (e) {
       status(`Error al guardar: ${e.message}`);
     }
@@ -507,6 +605,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentData = duplicated.data;
       syncFormFromData();
       status(`Duplicado! Nuevo ID: ${currentId}`);
+      await loadCardsList(el("search").value, el("typeFilter").value, 1);
     } catch (e) {
       status(`Error al duplicar: ${e.message}`);
     }

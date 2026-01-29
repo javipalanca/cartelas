@@ -98,21 +98,24 @@ def get_me(username: str = Depends(get_current_user)):
     return {"username": username}
 
 @app.get("/api/cards")
-def list_cards(q: Optional[str] = None, piece_type: Optional[str] = None):
-    cards = store.list_cards(q=q, piece_type=piece_type)
-    # respuesta ligera
-    return [{
-        "id": c.id,
-        "created_at": c.created_at,
-        "updated_at": c.updated_at,
-        "piece_number": c.data.piece_number,
-        "cabinet_number": c.data.cabinet_number,
-        "piece_type": c.data.piece_type,
-        "title": c.data.title,
-        "subtitle": c.data.subtitle,
-        "render_path": c.data.render_path,
-        "image_path": c.data.image_path,
-    } for c in cards]
+def list_cards(q: Optional[str] = None, piece_type: Optional[str] = None, skip: int = 0, limit: int = 25):
+    cards, total = store.list_cards(q=q, piece_type=piece_type, skip=skip, limit=limit)
+    # respuesta ligera con total
+    return {
+        "cards": [{
+            "id": c.id,
+            "created_at": c.created_at,
+            "updated_at": c.updated_at,
+            "piece_number": c.data.piece_number,
+            "cabinet_number": c.data.cabinet_number,
+            "piece_type": c.data.piece_type,
+            "title": c.data.title,
+            "subtitle": c.data.subtitle,
+            "render_path": c.data.render_path,
+            "image_path": c.data.image_path,
+        } for c in cards],
+        "total": total
+    }
 
 @app.get("/api/cards/{card_id}")
 def get_card(card_id: str):
@@ -140,6 +143,16 @@ def update_card(card_id: str, payload: dict, username: str = Depends(get_current
         raise HTTPException(404, "Card not found")
     logger.info(f"Card updated: {card_id}")
     return rec.model_dump()
+
+@app.delete("/api/cards/{card_id}")
+def delete_card(card_id: str, username: str = Depends(get_current_user)):
+    logger.info(f"User '{username}' deleting card {card_id}")
+    success = store.delete(card_id)
+    if not success:
+        logger.error(f"Card not found: {card_id}")
+        raise HTTPException(404, "Card not found")
+    logger.info(f"Card deleted: {card_id}")
+    return {"status": "deleted"}
 
 @app.post("/api/cards/{card_id}/duplicate")
 def duplicate_card(card_id: str, username: str = Depends(get_current_user)):

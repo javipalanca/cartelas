@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: cartelas
     ports:
-      - "8000:8000"
+      - "20095:8000"
     volumes:
       - ./data:/app/data
       - cartelas_fonts:/tmp/cartelas_fonts
@@ -15,6 +15,10 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
       - BASE_URL=${BASE_URL}
+      - SERVER_URL=${SERVER_URL}
+      - AUTH_USERNAME=${AUTH_USERNAME}
+      - AUTH_PASSWORD=${AUTH_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/"]
