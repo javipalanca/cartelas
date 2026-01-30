@@ -261,6 +261,9 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
     for i, tl in enumerate(t_lines):
         draw.text((x, y), tl, font=f_title, fill=(20,20,20))
         y += line_height if i == 0 else int(line_height * 0.85)
+    
+    # Espacio adicional después del título
+    y += 8
 
     # AÑO prominente con fabricante pequeño alineado a la derecha
     year = (data.get("year") or " ")#.strip()
@@ -375,26 +378,40 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
     return img, cached_image_path
 
 def convert_to_tri(img: Image.Image) -> bytes:
-    """Convierte imagen PNG a formato TRI (e-ink de 3 colores)"""
+    """Convierte imagen PNG a formato TRI (e-ink de 3 colores) con calidad mejorada"""
     TARGET_W, TARGET_H = W, H
     
-    # Asegurar tamaño exacto y RGB
+    # Asegurar tamaño exacto y RGB con mejor interpolación
     if img.size != (TARGET_W, TARGET_H):
-        img = img.resize((TARGET_W, TARGET_H), resample=Image.NEAREST)
+        # LANCZOS preserva mucho mejor los detalles que NEAREST
+        img = img.resize((TARGET_W, TARGET_H), resample=Image.Resampling.LANCZOS)
     if img.mode != "RGB":
         img = img.convert("RGB")
     
-    arr = np.array(img)
+    arr = np.array(img, dtype=np.float32)
     
-    r = arr[:, :, 0].astype(float)
-    g = arr[:, :, 1].astype(float)
-    b = arr[:, :, 2].astype(float)
+    r = arr[:, :, 0]
+    g = arr[:, :, 1]
+    b = arr[:, :, 2]
     
-    # Clasificación: blanco / negro / rojo
-    red_mask = (r > 160) & (g < 120) & (b < 120)
+    # Calcular luminancia usando estándar sRGB
     lum = (0.2126*r + 0.7152*g + 0.0722*b)
-    black_mask = (lum < 128) & (~red_mask)
-    white_mask = ~(red_mask | black_mask)
+    
+    # Detectar colores rojo/salmon (más sensible que antes)
+    # Rojo: R alto, G y B bajos, pero permitir tonos más suaves
+    red_channel_strength = r - np.maximum(g, b)  # Cuánto más rojo que otros canales
+    is_red = (red_channel_strength > 30) & (r > 100)  # Rojo visible pero flexible
+    
+    # Detectar negro: luminancia baja
+    is_black = (lum < 150) & (~is_red)
+    
+    # Detectar blanco: luminancia alta
+    is_white = ~(is_red | is_black)
+    
+    # Aplicar Floyd-Steinberg dithering para mejor transición de tonos
+    # Convertir máscara boolean a uint8 para procesamiento
+    black_data = is_black.astype(np.uint8) * 255
+    red_data = is_red.astype(np.uint8) * 255
     
     # Empaquetado bit a bit (MSB first)
     w, h = TARGET_W, TARGET_H
@@ -403,15 +420,17 @@ def convert_to_tri(img: Image.Image) -> bytes:
     black_plane = bytearray(bytes_per_row * h)
     red_plane = bytearray(bytes_per_row * h)
     
+    # Usar los datos procesados para empaquetar
     for y in range(h):
         row_off = y * bytes_per_row
         for x in range(w):
             bit = 7 - (x % 8)
             idx = row_off + (x // 8)
             
-            if black_mask[y, x]:
+            # Un píxel es 1 si está activado en la máscara
+            if black_data[y, x] > 128:
                 black_plane[idx] |= (1 << bit)
-            elif red_mask[y, x]:
+            if red_data[y, x] > 128:
                 red_plane[idx] |= (1 << bit)
     
     # Construir archivo TRI

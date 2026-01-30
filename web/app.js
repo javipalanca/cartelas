@@ -449,6 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Actualizar los datos con la sugerencia
       if (suggestion.title) currentData.title = suggestion.title;
+      if (suggestion.year) currentData.year = suggestion.year;
       if (suggestion.subtitle) currentData.subtitle = suggestion.subtitle;
       if (suggestion.bullets && suggestion.bullets.length > 0) {
         currentData.bullets = suggestion.bullets;

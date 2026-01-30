@@ -21,6 +21,54 @@ from .logging_config import setup_logging
 import requests
 from io import BytesIO
 
+def download_and_save_image(image_url: str, uploads_dir: Path) -> str:
+    """
+    Descarga una imagen desde URL y la guarda localmente.
+    Retorna la ruta local del archivo.
+    """
+    try:
+        # Descargar imagen
+        response = requests.get(image_url, timeout=30)
+        response.raise_for_status()
+        
+        # Determinar extensión
+        content_type = response.headers.get("content-type", "").lower()
+        if "png" in content_type:
+            ext = ".png"
+        elif "jpeg" in content_type or "jpg" in content_type:
+            ext = ".jpg"
+        elif "gif" in content_type:
+            ext = ".gif"
+        elif "webp" in content_type:
+            ext = ".webp"
+        else:
+            # Por defecto, intentar extraer de la URL
+            if image_url.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".webp")):
+                ext = Path(image_url).suffix
+            else:
+                ext = ".jpg"  # fallback
+        
+        # Generar nombre seguro
+        filename = f"img_{safe_filename(Path(image_url).stem)}{ext}"
+        filepath = uploads_dir / filename
+        
+        # Evitar duplicados
+        counter = 1
+        base_name = filepath.stem
+        while filepath.exists():
+            filepath = uploads_dir / f"{base_name}_{counter}{ext}"
+            counter += 1
+        
+        # Guardar archivo
+        with open(filepath, "wb") as f:
+            f.write(response.content)
+        
+        logger.info(f"Imagen descargada y guardada: {filepath}")
+        return str(filepath)
+    except Exception as e:
+        logger.error(f"Error descargando imagen desde {image_url}: {e}")
+        raise HTTPException(500, f"Error descargando imagen: {e}")
+
 # Configurar logging
 logger = setup_logging()
 logger.info("=== Iniciando aplicación Cartelas ===")
@@ -129,6 +177,18 @@ def create_card(payload: dict, username: str = Depends(get_current_user)):
     logger.info(f"User '{username}' creating new card")
     # payload puede venir vacío
     data = CardData.model_validate(payload.get("data", payload) if payload else {})
+    
+    # Si image_path es una URL, descargarla y guardarla localmente
+    if data.image_path and data.image_path.startswith(("http://", "https://")):
+        logger.info(f"Descargando imagen desde URL: {data.image_path}")
+        try:
+            local_path = download_and_save_image(data.image_path, UPLOADS)
+            data.image_path = local_path
+            logger.info(f"Imagen guardada localmente: {local_path}")
+        except Exception as e:
+            logger.error(f"Error procesando imagen: {e}")
+            raise
+    
     rec = store.create(data)
     logger.info(f"Card created: {rec.id}")
     return rec.model_dump()
@@ -137,6 +197,18 @@ def create_card(payload: dict, username: str = Depends(get_current_user)):
 def update_card(card_id: str, payload: dict, username: str = Depends(get_current_user)):
     logger.info(f"User '{username}' updating card {card_id}")
     data = CardData.model_validate(payload.get("data", payload))
+    
+    # Si image_path es una URL, descargarla y guardarla localmente
+    if data.image_path and data.image_path.startswith(("http://", "https://")):
+        logger.info(f"Descargando imagen desde URL: {data.image_path}")
+        try:
+            local_path = download_and_save_image(data.image_path, UPLOADS)
+            data.image_path = local_path
+            logger.info(f"Imagen guardada localmente: {local_path}")
+        except Exception as e:
+            logger.error(f"Error procesando imagen: {e}")
+            raise
+    
     rec = store.update(card_id, data)
     if not rec:
         logger.error(f"Card not found: {card_id}")
