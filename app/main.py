@@ -257,9 +257,7 @@ def api_preview(payload: dict, username: str = Depends(get_current_user)):
     """Renderiza una cartela en tiempo real sin guardarla"""
     try:
         data_obj = payload.get("data", {})
-        dither = payload.get("dither", 0)  # 0=sin dithering, 1=suave, 2=fuerte
-        if isinstance(dither, bool):
-            dither = 2 if dither else 0  # Compatibilidad con valores anteriores
+        dither = payload.get("dither", "none")  # nombre del algoritmo: none, ordered, floyd_steinberg, etc.
         image_path = data_obj.get("image_path")
         
         # Render
@@ -304,7 +302,7 @@ async def upload_image(card_id: str, image: UploadFile = File(...), username: st
 async def api_render(
     card_id: str,
     data: str = Form(...),
-    dither: int = Form(0),
+    dither: str = Form("none"),
     username: str = Depends(get_current_user),
 ):
     c = store.get(card_id)
@@ -321,7 +319,7 @@ async def api_render(
     image_path = data_obj.get("image_path")
 
     # Render
-    img, cached_path = render_card(data_obj, image_path=image_path, dither=int(dither))
+    img, cached_path = render_card(data_obj, image_path=image_path, dither=dither)
 
     out_png = RENDERS / f"{card_id}.png"
     img.save(out_png, format="PNG")
@@ -352,7 +350,7 @@ def render_tri(card_id: str, payload: dict, username: str = Depends(get_current_
         raise HTTPException(404, "Card not found")
 
     try:
-        dither = int(payload.get("dither", 0))
+        dither = payload.get("dither", "none")
         image_path = c.data.image_path
         
         # Renderizar imagen PNG

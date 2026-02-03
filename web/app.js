@@ -177,7 +177,7 @@ async function updatePreview() {
         headers: getAuthHeaders(),
         body: JSON.stringify({
           data: currentData,
-          dither: parseInt(el("dither").value, 10)
+          dither: el("dither").value
         }),
       });
       
@@ -550,7 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Botón: Renderizar y descargar como TRI
-  el("renderTriBtn").onclick = async () => {
+  function renderTri() {
     if (!currentId) {
       status("Debes guardar la cartela primero");
       return;
@@ -561,33 +561,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`/api/cards/${currentId}/render.tri`, {
+      const response = fetch(`/api/cards/${currentId}/render.tri`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          dither: parseInt(el("dither").value, 10)
+          dither: el("dither").value
         }),
       });
 
-      if (!response.ok) throw new Error(await response.text());
+      response.then(async (r) => {
+        if (!r.ok) throw new Error(await r.text());
 
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      
-      // Descargar automáticamente con nombre del título
-      const a = document.createElement("a");
-      a.href = url;
-      const filename = slugify(currentData.title || currentId);
-      a.download = `${filename}.tri`;
-      a.click();
-      
-      status("TRI descargado!");
+        const blob = await r.blob();
+        const url = URL.createObjectURL(blob);
+        
+        // Descargar automáticamente con nombre del título
+        const a = document.createElement("a");
+        a.href = url;
+        const filename = slugify(currentData.title || currentId);
+        a.download = `${filename}.tri`;
+        a.click();
+        
+        status("TRI descargado!");
+        // Cerrar dropdown
+        el("triDropdownMenu").classList.add("hidden");
+      }).catch((e) => {
+        status(`Error al generar TRI: ${e.message}`);
+      });
     } catch (e) {
       status(`Error al generar TRI: ${e.message}`);
     }
+  }
+
+  // Toggle dropdown
+  el("renderTriBtn").onclick = () => {
+    renderTri();
   };
 
   // Botón: Duplicar

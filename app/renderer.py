@@ -1,6 +1,6 @@
 from __future__ import annotations
 from PIL import Image, ImageDraw, ImageFont, ImageOps
-from typing import Tuple
+from typing import Tuple, List, Dict, Optional
 import os
 import requests
 from io import BytesIO
@@ -10,6 +10,7 @@ import hashlib
 import struct
 import numpy as np
 from pathlib import Path
+from .dither2 import ditherea
 
 # Cache de fuentes en /tmp
 FONT_CACHE_DIR = "/tmp/cartelas_fonts"
@@ -53,12 +54,12 @@ def _get_cached_font(url: str, size: int, bold: bool) -> ImageFont.FreeTypeFont:
         print(f"✗ Error cargando fuente {cache_path}: {e}")
         return None
 
-W, H = 480, 670
+W, H = 480, 700 # 670
 
-MARGIN = 28
+MARGIN = 15 #28
 TOP_BOX_SIZE = 50  # Cuadrado
 
-IMAGE_BOX_H = 200
+IMAGE_BOX_H = 230
 
 def _load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     """Carga fuentes de GitHub (openmaptiles/fonts - confiable en Docker)"""
@@ -208,14 +209,22 @@ def _remove_white_background(img: Image.Image) -> Image.Image:
     img.putdata(new_data)
     return img
 
-def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> tuple[Image.Image, str | None]:
+def render_card(
+    data: dict,
+    image_path: str | None = None,
+    dither: str | int = "none",
+) -> tuple[Image.Image, str | None]:
     """
     Renderiza una cartela.
-    dither: 0=sin dithering (gris), 1=suave, 2=fuerte
+    dither: nombre del algoritmo (none, ordered, floyd_steinberg, etc.) 
+            o valores numéricos antiguos (0=none, 1=floyd_steinberg, 2=floyd_steinberg)
     
     Returns:
         (imagen_renderizada, ruta_imagen_cacheada)
     """
+    # Compatibilidad con valores numéricos antiguos
+    if isinstance(dither, int):
+        dither = {0: "none", 1: "floyd_steinberg", 2: "floyd_steinberg"}.get(dither, "none")
     img = Image.new("RGB", (W, H), (255, 255, 255))  # Blanco puro
     draw = ImageDraw.Draw(img)
 
@@ -223,10 +232,10 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
     f_title = _load_font(title_font_size, bold=True)  # Título grande y en negrita
     f_sub   = _load_font(28, bold=True)   # Subtítulo más grande (AÑO IMPORTANTE)
     f_sub_sm = _load_font(18, bold=False) # Subtítulo pequeño a la derecha
-    f_bul   = _load_font(16, bold=False)
+    f_bul   = _load_font(22, bold=False)  # Bullets - aumentado para mejor legibilidad
     f_piece = _load_font(50, bold=True)   # Número de pieza muy grande
-    f_cap   = _load_font(13, bold=True)
-    f_small = _load_font(12, bold=False)
+    f_cap   = _load_font(20, bold=True)   # Título datos técnicos - aumentado
+    f_small = _load_font(18, bold=False)  # Datos técnicos - aumentado
 
     # Nº pieza (arriba derecha) - cuadrado
     pn = (data.get("piece_number") or "").strip()
@@ -245,7 +254,7 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
         draw.text((tx, ty), txt, font=f_piece, fill=(20,20,20))
 
     x = MARGIN
-    y = 10 #MARGIN + 8  # Más abajo para tener espacio arriba
+    y = 0 #10 #MARGIN + 8  # Más abajo para tener espacio arriba
 
     # Título (deja sitio si el nº pieza existe)
     title = (data.get("title") or "").strip().upper()
@@ -269,22 +278,22 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
     year = (data.get("year") or " ")#.strip()
     manufacturer = (data.get("subtitle") or "").strip()  # subtitle ahora es fabricante
     if year:
-        if year:
+        if year.strip():
             draw.text((x, y), year, font=f_sub, fill=(20,20,20))  # Color muy oscuro
         if manufacturer:
             sw = draw.textlength(manufacturer, font=f_sub_sm)
             right_limit = W - MARGIN - (TOP_BOX_SIZE + 12 if pn else 0)
             sx = right_limit - sw
             draw.text((sx, y + 8), manufacturer, font=f_sub_sm, fill=(60,60,60))
-        y += 40
+        y += 30 #40
 
     # regla separadora
     draw.rectangle([x, y, W - x, y + 2], fill=(255,100,100))  # Línea más oscura
-    y += 18
+    y += 10 #18
 
     # caja imagen
     img_box = (x, y, W - x, y + IMAGE_BOX_H)
-    cached_image_path = None
+    cached_image_path = None  
 
     if image_path:
         try:
@@ -303,27 +312,15 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
                 background.paste(src, mask=src.split()[3])  # Canal alpha
                 src = background
             
-            # look B/N tipo museo
-            src = ImageOps.grayscale(src).convert("RGB")
-            # Aplicar dithering según nivel
-            if dither == 1:  # Dithering suave
-                g = ImageOps.grayscale(src)
-                # Posterize a 16 niveles (4 bits) antes de dithering
-                g = ImageOps.posterize(g, 4)
-                bw = g.convert("1")
-                src = bw.convert("RGB")
-            elif dither == 2:  # Dithering fuerte
-                g = ImageOps.grayscale(src)
-                bw = g.convert("1")  # Floyd–Steinberg por defecto
-                src = bw.convert("RGB")
-            
             # Obtener escala de imagen del data
             image_scale = float(data.get("image_scale", 1.0))
             actual_height = _paste_into_box(img, src, img_box, mode="contain", scale_factor=image_scale)
             # Ajustar y basado en la altura real de la imagen
             y += actual_height + 16
         except Exception as e:
-            draw.text((x + 12, y + 10), f"ERROR: {str(e)[:30]}", font=f_sub, fill=(200,50,50))
+            import traceback
+            traceback.print_exc()
+            draw.text((x + 12, y + 10), f"ERROR: {str(e)}", font=f_sub, fill=(200,50,50))
             y += IMAGE_BOX_H + 16
     else:
         draw.text((x + 12, y + 10), "IMATGE", font=f_sub, fill=(140,140,140))
@@ -334,17 +331,17 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
     bullets = [b.strip() for b in bullets if b.strip()]
     bullets = bullets[:6]
 
-    max_text_w = W - 2*MARGIN - 18
+    max_text_w = W - 2*MARGIN  - 10 #18
     for b in bullets[:4]:
         draw.text((x, y), "•", font=f_bul, fill=(34,34,34))
         lines = _wrap(draw, b, f_bul, max_text_w)
         if not lines:
             y += 24
             continue
-        draw.text((x + 18, y), lines[0], font=f_bul, fill=(34,34,34))
-        y += 24
+        draw.text((x + 20, y), lines[0], font=f_bul, fill=(34,34,34))
+        y += 22
         for extra in lines[1:]:
-            draw.text((x + 18, y), extra, font=f_bul, fill=(34,34,34))
+            draw.text((x + 20, y), extra, font=f_bul, fill=(34,34,34))
             y += 24
         y += 6
 
@@ -355,11 +352,11 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
     if tech:
         y += 6
         draw.text((x, y), "DATOS TÉCNICOS", font=f_cap, fill=(34,34,34))
-        y += 18
-        draw.rectangle([x, y, W - x, y + 2], fill=(255,175,175))
+        y += 25 #18
+        draw.rectangle([x, y, W - x, y + 2], fill=(255,100,100)) #(255,175,175))
         y += 10
 
-        label_w = 105
+        label_w = 85  # 105
         for t in tech:
             lab = t["label"].strip()[:18]
             val = t["value"].strip()
@@ -375,43 +372,50 @@ def render_card(data: dict, image_path: str | None = None, dither: int = 0) -> t
                 y += 16
             y += 4
 
+    
+    # recorta la imagen de img_box y pegala encima de la original
+    if image_path:
+        img_with_dither = ditherea(img)
+        img_cropped = img_with_dither.crop((img_box[0], img_box[1], img_box[2], img_box[3]))
+        img.paste(img_cropped, (img_box[0], img_box[1]))
     return img, cached_image_path
 
 def convert_to_tri(img: Image.Image) -> bytes:
-    """Convierte imagen PNG a formato TRI (e-ink de 3 colores) con calidad mejorada"""
+    """Convierte imagen PNG a formato TRI (e-ink de 3 colores) con texto perfecto"""
     TARGET_W, TARGET_H = W, H
     
-    # Asegurar tamaño exacto y RGB con mejor interpolación
+    # Asegurar tamaño exacto y RGB - NO redimensionar aquí, ya viene del tamaño correcto
     if img.size != (TARGET_W, TARGET_H):
-        # LANCZOS preserva mucho mejor los detalles que NEAREST
-        img = img.resize((TARGET_W, TARGET_H), resample=Image.Resampling.LANCZOS)
+        # Si necesita redimensionar, usar NEAREST para preservar texto renderizado
+        img = img.resize((TARGET_W, TARGET_H), resample=Image.Resampling.NEAREST)
     if img.mode != "RGB":
         img = img.convert("RGB")
     
-    arr = np.array(img, dtype=np.float32)
+    arr = np.array(img, dtype=np.uint8)
     
     r = arr[:, :, 0]
     g = arr[:, :, 1]
     b = arr[:, :, 2]
     
-    # Calcular luminancia usando estándar sRGB
-    lum = (0.2126*r + 0.7152*g + 0.0722*b)
+    # Calcular luminancia
+    lum = (0.2126 * r.astype(np.float32) + 
+           0.7152 * g.astype(np.float32) + 
+           0.0722 * b.astype(np.float32))
     
-    # Detectar colores rojo/salmon (más sensible que antes)
-    # Rojo: R alto, G y B bajos, pero permitir tonos más suaves
-    red_channel_strength = r - np.maximum(g, b)  # Cuánto más rojo que otros canales
-    is_red = (red_channel_strength > 30) & (r > 100)  # Rojo visible pero flexible
+    # Detectar rojo (líneas/bordes decorativos)
+    red_strength = r.astype(np.float32) - np.maximum(g, b).astype(np.float32)
+    is_red = (red_strength > 30) & (r > 100)
     
-    # Detectar negro: luminancia baja
-    is_black = (lum < 150) & (~is_red)
+    # Para texto perfecto: usar umbral duro en píxeles muy oscuros
+    # El texto renderizado es (20,20,20) = luminancia ~20
+    # Usar umbral en 80 para capturar solo texto nítido
+    is_text = lum < 80
     
-    # Detectar blanco: luminancia alta
-    is_white = ~(is_red | is_black)
+    # Para grises medios (imágenes): usar umbral normal
+    is_dark_gray = (lum >= 80) & (lum < 160) & (~is_red)
     
-    # Aplicar Floyd-Steinberg dithering para mejor transición de tonos
-    # Convertir máscara boolean a uint8 para procesamiento
-    black_data = is_black.astype(np.uint8) * 255
-    red_data = is_red.astype(np.uint8) * 255
+    # Combinar: texto + algunos grises oscuros
+    is_black = is_text | is_dark_gray
     
     # Empaquetado bit a bit (MSB first)
     w, h = TARGET_W, TARGET_H
@@ -420,17 +424,15 @@ def convert_to_tri(img: Image.Image) -> bytes:
     black_plane = bytearray(bytes_per_row * h)
     red_plane = bytearray(bytes_per_row * h)
     
-    # Usar los datos procesados para empaquetar
     for y in range(h):
         row_off = y * bytes_per_row
         for x in range(w):
             bit = 7 - (x % 8)
             idx = row_off + (x // 8)
             
-            # Un píxel es 1 si está activado en la máscara
-            if black_data[y, x] > 128:
+            if is_black[y, x]:
                 black_plane[idx] |= (1 << bit)
-            if red_data[y, x] > 128:
+            elif is_red[y, x]:
                 red_plane[idx] |= (1 << bit)
     
     # Construir archivo TRI
@@ -440,5 +442,5 @@ def convert_to_tri(img: Image.Image) -> bytes:
     output.write(struct.pack("<H", h))
     output.write(black_plane)
     output.write(red_plane)
-    
+
     return output.getvalue()
