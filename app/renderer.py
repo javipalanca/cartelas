@@ -315,6 +315,9 @@ def render_card(
             # Obtener escala de imagen del data
             image_scale = float(data.get("image_scale", 1.0))
             actual_height = _paste_into_box(img, src, img_box, mode="contain", scale_factor=image_scale)
+            # Actualizar img_box para reflejar la altura real ocupada
+            img_box = (img_box[0], img_box[1], img_box[2], img_box[1] + actual_height)
+
             # Ajustar y basado en la altura real de la imagen
             y += actual_height + 16
         except Exception as e:
