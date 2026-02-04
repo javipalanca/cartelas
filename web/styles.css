@@ -1,12 +1,22 @@
 /* Estilos personalizados adicionales que complementan Tailwind */
+#listPanel {
+  overflow: hidden;
+}
+
 #listPanel.collapsed {
   width: 50px;
+  min-width: 50px;
   padding: 14px 10px;
 }
 
 #listPanel.collapsed #list,
-#listPanel.collapsed #listTitle {
+#listPanel.collapsed #listTitle,
+#listPanel.collapsed #pagination {
   display: none;
+}
+
+#mainGrid.list-collapsed {
+  grid-template-columns: 50px minmax(0, 1fr) minmax(0, 1fr) !important;
 }
 
 .cardrow {

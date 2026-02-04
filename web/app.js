@@ -4,6 +4,8 @@ let previewTimeout = null;
 let currentPage = 1;
 let totalCards = 0;
 const CARDS_PER_PAGE = 25;
+let selectedShowcase = null;
+let allCards = [];
 
 const el = (id) => document.getElementById(id);
 const status = (msg) => el("status").textContent = msg || "";
@@ -177,7 +179,7 @@ async function updatePreview() {
         headers: getAuthHeaders(),
         body: JSON.stringify({
           data: currentData,
-          dither: el("dither").value
+          dither: "floyd_steinberg"
         }),
       });
       
@@ -197,40 +199,127 @@ async function loadCardsList(q = "", piece_type = "", page = 1) {
     if (q) params.set("q", q);
     if (piece_type && piece_type !== "all") params.set("piece_type", piece_type);
     
-    const skip = (page - 1) * CARDS_PER_PAGE;
-    params.set("skip", skip);
-    params.set("limit", CARDS_PER_PAGE);
+    // Cargar todas las cartas sin paginación para agrupar por vitrinas
+    params.set("skip", 0);
+    params.set("limit", 10000); // Cargar todas
     
     const response = await api(`/api/cards?${params}`);
     const result = await response.json();
     
     // Manejo tanto de respuesta simple (array) como de objeto con total
-    let cards, total;
+    let cards;
     if (Array.isArray(result)) {
       cards = result;
-      total = cards.length;
     } else {
       cards = result.cards || [];
-      total = result.total || 0;
     }
     
-    totalCards = total;
-    currentPage = page;
+    allCards = cards;
+    totalCards = cards.length;
     
-    const listEl = el("list");
-    listEl.innerHTML = "";
+    renderShowcasesList();
+  } catch (e) {
+    console.error("Error al cargar lista:", e);
+  }
+}
+
+function renderShowcasesList() {
+  const listEl = el("list");
+  const listTitle = el("listTitle");
+  listEl.innerHTML = "";
+  
+  if (selectedShowcase === null) {
+    // Mostrar listado de vitrinas
+    listTitle.textContent = "Vitrinas";
     
-    if (cards.length === 0) {
+    // Agrupar cartas por vitrina
+    const groupedByShowcase = {};
+    allCards.forEach(card => {
+      const showcase = card.cabinet_number || "Sin Vitrina";
+      if (!groupedByShowcase[showcase]) {
+        groupedByShowcase[showcase] = [];
+      }
+      groupedByShowcase[showcase].push(card);
+    });
+    
+    // Ordenar piezas dentro de cada vitrina por número
+    Object.keys(groupedByShowcase).forEach(showcase => {
+      groupedByShowcase[showcase].sort((a, b) => {
+        const numA = parseInt(a.piece_number) || 0;
+        const numB = parseInt(b.piece_number) || 0;
+        return numA - numB;
+      });
+    });
+    
+    // Ordenar vitrinas alfabéticamente, pero "Sin Vitrina" al final
+    const sortedShowcases = Object.keys(groupedByShowcase).sort((a, b) => {
+      if (a === "Sin Vitrina") return 1;
+      if (b === "Sin Vitrina") return -1;
+      return a.localeCompare(b, 'es', { numeric: true });
+    });
+    
+    if (sortedShowcases.length === 0) {
       listEl.innerHTML = '<div class="text-gray-500 text-sm py-4">No hay cartelas para mostrar</div>';
     } else {
-      cards.forEach(card => {
+      sortedShowcases.forEach(showcase => {
         const row = document.createElement("div");
         row.className = "cardrow";
-        const cabinetDisplay = card.cabinet_number ? `Vitrina ${card.cabinet_number} · ` : "";
+        row.style.cursor = "pointer";
+        row.onclick = () => {
+          selectedShowcase = showcase;
+          renderShowcasesList();
+        };
+        row.innerHTML = `
+          <div style="flex: 1;">
+            <div class="title">${showcase}</div>
+            <div class="meta">${groupedByShowcase[showcase].length} pieza(s)</div>
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
+    }
+    
+    // Ocultar paginación en vista de vitrinas
+    const paginationEl = el("pagination");
+    if (paginationEl) paginationEl.innerHTML = "";
+    
+  } else {
+    // Mostrar piezas de la vitrina seleccionada
+    listTitle.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <button 
+          class="text-xs text-blue-600 dark:text-blue-400 hover:underline" 
+          style="text-align: left; background: none; border: none; padding: 0; cursor: pointer;"
+          onclick="selectedShowcase = null; renderShowcasesList();"
+        >
+          ← Volver a vitrinas
+        </button>
+        <span>${selectedShowcase}</span>
+      </div>
+    `;
+    
+    const showcaseCards = allCards.filter(card => {
+      const showcase = card.cabinet_number || "Sin Vitrina";
+      return showcase === selectedShowcase;
+    });
+    
+    // Ordenar por número de pieza
+    showcaseCards.sort((a, b) => {
+      const numA = parseInt(a.piece_number) || 0;
+      const numB = parseInt(b.piece_number) || 0;
+      return numA - numB;
+    });
+    
+    if (showcaseCards.length === 0) {
+      listEl.innerHTML = '<div class="text-gray-500 text-sm py-4">No hay piezas en esta vitrina</div>';
+    } else {
+      showcaseCards.forEach(card => {
+        const row = document.createElement("div");
+        row.className = "cardrow";
         row.innerHTML = `
           <div style="cursor: pointer; flex: 1;" onclick="loadCard('${card.id}')">
             <div class="title">${card.title || "Sin título"}</div>
-            <div class="meta">${cabinetDisplay}${card.piece_number || ""} · ${card.piece_type || ""}</div>
+            <div class="meta">Pieza ${card.piece_number || ""} · ${card.piece_type || ""}</div>
           </div>
           <div class="actions">
             <button class="smallbtn" onclick="deleteCard('${card.id}', event)" title="Borrar cartela">✕</button>
@@ -240,9 +329,9 @@ async function loadCardsList(q = "", piece_type = "", page = 1) {
       });
     }
     
-    renderPagination(total, page);
-  } catch (e) {
-    console.error("Error al cargar lista:", e);
+    // Ocultar paginación en vista de piezas
+    const paginationEl = el("pagination");
+    if (paginationEl) paginationEl.innerHTML = "";
   }
 }
 
@@ -322,6 +411,7 @@ async function deleteCard(id, event) {
         currentData = emptyCardData();
         syncFormFromData();
       }
+      // Mantener la vitrina seleccionada al recargar
       await loadCardsList(el("search").value, el("typeFilter").value, 1);
     } else {
       status("Error al borrar la cartela");
@@ -341,6 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Botón hamburguesa para plegar/desplegar listado
   el("toggleList").onclick = () => {
     el("listPanel").classList.toggle("collapsed");
+    el("mainGrid").classList.toggle("list-collapsed");
   };
 
   // Búsqueda y filtros
@@ -358,9 +449,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ["piece_number", "cabinet_number", "piece_type", "name_query", "title", "title_font_size", "year", "subtitle", "image_url"].forEach(id => {
     el(id).oninput = () => syncDataFromForm();
   });
-  
-  // Listener para dithering
-  el("dither").onchange = () => updatePreview();
 
   // Listener para escala de imagen
   el("image_scale").oninput = (e) => {
@@ -519,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const formData = new FormData();
       formData.append("data", JSON.stringify(currentData));
-      formData.append("dither", el("dither").value);
+      formData.append("dither", "floyd_steinberg");
 
       const token = localStorage.getItem("token");
       const response = await fetch(`/api/cards/${currentId}/render`, {
@@ -568,7 +656,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          dither: el("dither").value
+          dither: "floyd_steinberg"
         }),
       });
 
