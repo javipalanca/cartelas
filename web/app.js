@@ -427,7 +427,23 @@ async function api(path, opts={}) {
   return r;
 }
 
+// Actualizar logo según modo oscuro/claro
+function updateLogoForTheme() {
+  const logo = el('headerLogo');
+  if (!logo) return;
+  
+  const isDark = document.documentElement.classList.contains('dark');
+  
+  if (isDark) {
+    logo.src = 'https://museo.inf.upv.es/wp-content/uploads/2026/02/newlogoVblanco.png';
+  } else {
+    logo.src = 'https://museo.inf.upv.es/wp-content/uploads/2021/05/newlogoV.png';
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  // Actualizar logo al cargar
+  updateLogoForTheme();
   // Botón hamburguesa para plegar/desplegar listado
   el("toggleList").onclick = () => {
     el("listPanel").classList.toggle("collapsed");
